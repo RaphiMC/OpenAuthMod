@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.github.oam",
+  "compatibilityLevel": "JAVA_8",
+  "mixins": [
+    "MixinClientLoginNetworkHandler",
+    "MixinClientPlayNetworkHandler"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

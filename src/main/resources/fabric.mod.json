@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "oam",
+  "version": "${version}",
+  "name": "Open Auth Mod",
+  "description": "Authenticate with proxies during login or play state to allow online mode server switching.",
+  "icon": "assets/oam/logo.png",
+  "authors": [
+    "RK_01",
+    "Lenni0451"
+  ],
+  "contact": {
+    "homepage": "https://github.com/RaphiMC/OpenAuthMod/releases/latest",
+    "sources": "https://github.com/RaphiMC/OpenAuthMod"
+  },
+  "license": "MIT",
+  "environment": "client",
+  "mixins": [
+    "oam.mixins.json"
+  ],
+  "accessWidener": "oam.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "minecraft": ">=1.14",
+    "java": ">=8"
+  }
+}
