@@ -13,7 +13,7 @@ This mod provides an interface for proxies to authenticate to an online mode ser
 
 ## Building
 To run this mod in a development environment you simply need to import the project as a gradle project into your IDE.
-To run it using the command line execute `gradlew runClient`
+To run it using the command line execute `gradlew runClient`\
 To build it using the command line execute `gradlew build`
 
 ## Protocol definition
