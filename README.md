@@ -6,7 +6,7 @@ This mod provides an interface for proxies to authenticate to an online mode ser
 
 ## Compatibility
 * Forge 1.8 - 1.12.2
-* Fabric 1.14 - 1.17.1
+* Fabric 1.14 - 1.18
 
 ## Projects where this mod can be used
 * ViaProxy: ViaProxy is a closed source proxy which lets players join on every classic, alpha, beta and release server. To try it out join *viaproxy.lenni0451.net* with a minecraft 1.8 - latest client. OpenAuthMod allows you to join online mode servers over that proxy.
