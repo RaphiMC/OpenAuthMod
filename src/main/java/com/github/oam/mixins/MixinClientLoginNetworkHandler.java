@@ -1,5 +1,6 @@
-package com.github.oam;
+package com.github.oam.mixins;
 
+import com.github.oam.OpenAuthMod;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmScreen;
@@ -35,8 +36,8 @@ public abstract class MixinClientLoginNetworkHandler {
     protected abstract Text joinServerSession(String serverId);
 
     @Inject(method = "onQueryRequest", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", remap = false), cancellable = true)
-    public void handleOAM(LoginQueryRequestS2CPacket packet, CallbackInfo ci) {
-        if (packet.channel.toString().equals("openauthmod:join")) {
+    private void handleOAM(LoginQueryRequestS2CPacket packet, CallbackInfo ci) {
+        if (packet.channel.equals(OpenAuthMod.OAM_CHANNEL)) {
             ci.cancel();
 
             final Screen parentScreen = this.client.currentScreen;
@@ -45,16 +46,14 @@ public abstract class MixinClientLoginNetworkHandler {
                 this.client.openScreen(new ConfirmScreen(success -> {
                     if (success) {
                         if (this.joinServerSession(serverHash) == null) {
-                            this.client.openScreen(parentScreen);
                             this.connection.send(new LoginQueryResponseC2SPacket(packet.queryId, new PacketByteBuf(Unpooled.buffer())));
                         } else {
-                            this.client.openScreen(parentScreen);
                             this.connection.send(new LoginQueryResponseC2SPacket(packet.queryId, null));
                         }
                     } else {
-                        this.client.openScreen(parentScreen);
                         this.connection.send(new LoginQueryResponseC2SPacket(packet.queryId, null));
                     }
+                    this.client.openScreen(parentScreen);
                 }, new LiteralText("Allow Open Auth Mod authentication?"), new LiteralText("This will allow the proxy to authenticate as you in a Minecraft Server.")));
             });
         }

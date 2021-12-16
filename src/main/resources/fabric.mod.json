@@ -11,10 +11,16 @@
   ],
   "contact": {
     "homepage": "https://github.com/RaphiMC/OpenAuthMod/releases/latest",
+    "issues": "https://github.com/RaphiMC/OpenAuthMod/issues",
     "sources": "https://github.com/RaphiMC/OpenAuthMod"
   },
   "license": "MIT",
   "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.github.oam.OpenAuthMod"
+    ]
+  },
   "mixins": [
     "oam.mixins.json"
   ],
