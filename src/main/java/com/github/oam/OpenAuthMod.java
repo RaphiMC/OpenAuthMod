@@ -7,6 +7,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.network.ClientPlayNetworkHandler;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.network.packet.c2s.play.CustomPayloadC2SPacket;
 import net.minecraft.text.LiteralText;
@@ -26,7 +27,7 @@ public class OpenAuthMod implements ClientModInitializer {
         }
     }
 
-    public static void handlePlayCustomPayload(final Identifier channel, final PacketByteBuf data) {
+    public static void handlePlayCustomPayload(final ClientPlayNetworkHandler networkHandler, final Identifier channel, final PacketByteBuf data) {
         final Screen parentScreen = mc.currentScreen;
         final String serverHash = data.readString();
         mc.execute(() -> {
@@ -44,9 +45,9 @@ public class OpenAuthMod implements ClientModInitializer {
                 }
                 mc.openScreen(parentScreen);
                 if (OpenAuthMod.MULTICONNECT_LOADED) {
-                    MultiConnectCompat.sendPacket(mc.getNetworkHandler(), channel, buf);
+                    MultiConnectCompat.sendPacket(networkHandler, channel, buf);
                 } else {
-                    mc.getNetworkHandler().sendPacket(new CustomPayloadC2SPacket(channel, buf));
+                    networkHandler.sendPacket(new CustomPayloadC2SPacket(channel, buf));
                 }
             }, new LiteralText("Allow Open Auth Mod authentication?"), new LiteralText("This will allow the proxy to authenticate as you in a Minecraft Server.")));
         });

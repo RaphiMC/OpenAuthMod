@@ -12,11 +12,11 @@ public class MultiConnectCompat {
     public static void allowOAMCustomPayloads() {
         MultiConnectAPI.instance().addClientboundIdentifierCustomPayloadListener(event -> {
             if (!event.getChannel().equals(OpenAuthMod.OAM_CHANNEL)) return;
-            OpenAuthMod.handlePlayCustomPayload(event.getChannel(), event.getData());
+            OpenAuthMod.handlePlayCustomPayload(event.getNetworkHandler(), event.getChannel(), event.getData());
         });
         MultiConnectAPI.instance().addClientboundStringCustomPayloadListener(event -> {
             if (!event.getChannel().equals(OpenAuthMod.OAM_CHANNEL.toString())) return;
-            OpenAuthMod.handlePlayCustomPayload(new Identifier(event.getChannel()), event.getData());
+            OpenAuthMod.handlePlayCustomPayload(event.getNetworkHandler(), new Identifier(event.getChannel()), event.getData());
         });
     }
 

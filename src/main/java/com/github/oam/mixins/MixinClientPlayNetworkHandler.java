@@ -14,7 +14,7 @@ public abstract class MixinClientPlayNetworkHandler {
     @Inject(method = "onCustomPayload", at = @At(value = "INVOKE", target = "Lnet/minecraft/network/NetworkThreadUtils;forceMainThread(Lnet/minecraft/network/Packet;Lnet/minecraft/network/listener/PacketListener;Lnet/minecraft/util/thread/ThreadExecutor;)V"), cancellable = true)
     private void handleOAM(CustomPayloadS2CPacket packet, CallbackInfo ci) {
         if (packet.channel.equals(OpenAuthMod.OAM_CHANNEL)) {
-            OpenAuthMod.handlePlayCustomPayload(packet.channel, packet.data);
+            OpenAuthMod.handlePlayCustomPayload((ClientPlayNetworkHandler) (Object) this, packet.channel, packet.data);
             ci.cancel();
         }
     }
