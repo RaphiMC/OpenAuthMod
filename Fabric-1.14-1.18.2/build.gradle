@@ -1,0 +1,38 @@
+plugins {
+    id 'fabric-loom' version '0.7-SNAPSHOT'
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    modImplementation("net.earthcomputer.multiconnect:multiconnect-api:1.3.36") {
+        transitive = false
+    }
+    include 'net.earthcomputer.multiconnect:multiconnect-api:1.3.36'
+
+    libs project(":Shared")
+}
+
+loom {
+    accessWidener = file("src/main/resources/oam.accesswidener")
+    refmapName = "oam.mixins.refmap.json"
+
+    runs {
+        client {
+            runDir = projectDir.parentFile.toPath().relativize(project.file('run').toPath()).toFile().path
+
+            // Configure run config with the default client options.
+            client()
+        }
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}
