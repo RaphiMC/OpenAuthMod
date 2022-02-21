@@ -62,4 +62,21 @@ dependencies {
     libs project(":Shared")
 }
 
+jar {
+    manifest.attributes(
+            "Manifest-Version": '1.0',
+            "FMLCorePluginContainsFMLMod": 'true',
+            "ForceLoadAsMod": 'true',
+            "FMLCorePlugin": 'com.github.oam.injection.Injector'
+    )
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("mcmod.info") {
+        expand "version": project.version
+    }
+}
+
 jar.finalizedBy('reobfJar')

@@ -19,7 +19,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-@Mod(modid = "assets/oam", version = "1.1.2", acceptedMinecraftVersions = "*")
+@Mod(modid = "oam", version = "1.1.2", acceptedMinecraftVersions = "*")
 public class OpenAuthMod {
 
     private static final String OAM_CPL_CHANNEL = "openauthmod:join";
