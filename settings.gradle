@@ -16,5 +16,5 @@ include(":Shared-1.13-1.18.2")
 include(":Shared-1.8-1.12.2")
 
 include(":Fabric-1.14-1.18.2")
-include(":Forge-1.13-1.18.2")
+include(":Forge-1.14-1.18.2")
 include(":Forge-1.8-1.12.2")
