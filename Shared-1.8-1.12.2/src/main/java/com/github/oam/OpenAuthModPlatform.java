@@ -14,11 +14,11 @@ import java.util.concurrent.Callable;
 
 public abstract class OpenAuthModPlatform {
 
-    private static final String OAM_CHANNEL = "openauthmod:join";
+    public static final String OAM_CHANNEL = "openauthmod:join";
 
-    private static final byte[] OAM_MAGIC_BYTES = new byte[]{2, 20, 12, 3};
-    private static final String OAM_MAGIC_STRING = new String(OAM_MAGIC_BYTES, StandardCharsets.UTF_8);
-    private static final int OAM_MAGIC_INT = new BigInteger(OAM_MAGIC_BYTES).intValueExact();
+    public static final byte[] OAM_MAGIC_BYTES = new byte[]{2, 20, 12, 3};
+    public static final String OAM_MAGIC_STRING = new String(OAM_MAGIC_BYTES, StandardCharsets.UTF_8);
+    public static final int OAM_MAGIC_INT = new BigInteger(OAM_MAGIC_BYTES).intValueExact();
 
     private ByteArrayOutputStream compressionDataStream = null;
 

@@ -17,6 +17,7 @@ public class OpenAuthMod extends OpenAuthModPlatform {
 
     public static OpenAuthMod INSTANCE;
 
+    private final Minecraft mc = Minecraft.getMinecraft();
     private NetworkManager networkManager;
 
     public OpenAuthMod() {
@@ -61,10 +62,10 @@ public class OpenAuthMod extends OpenAuthModPlatform {
             final PacketBuffer buf = new PacketBuffer(Unpooled.wrappedBuffer(data));
             ReflectionUtils.setField(packet, channel, String.class, 0);
             ReflectionUtils.setField(packet, buf, PacketBuffer.class, 0);
-            networkManager.sendPacket(packet);
+            this.networkManager.sendPacket(packet);
         } catch (Throwable e) {
             e.printStackTrace();
-            networkManager.channel().close();
+            this.networkManager.channel().close();
         }
     }
 
@@ -76,30 +77,29 @@ public class OpenAuthMod extends OpenAuthModPlatform {
             networkManager.sendPacket(loginStartPacket);
         } catch (Throwable e) {
             e.printStackTrace();
-            networkManager.channel().close();
+            this.networkManager.channel().close();
         }
     }
 
     @Override
     protected void openConfirmScreen(String title, String subTitle, Callable<Void> yesCallback, Callable<Void> noCallback) {
-        Minecraft.getMinecraft().addScheduledTask(() -> {
-            final GuiScreen parentScreen = Minecraft.getMinecraft().currentScreen;
+        mc.addScheduledTask(() -> {
+            final GuiScreen parentScreen = mc.currentScreen;
             final GuiYesNo guiYesNo = new GuiYesNo((result, id) -> {
                 try {
                     final Void unused = result ? yesCallback.call() : noCallback.call();
                 } catch (Throwable e) {
                     e.printStackTrace();
-                    networkManager.channel().close();
+                    this.networkManager.channel().close();
                 }
-                Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+                mc.displayGuiScreen(parentScreen);
             }, title, subTitle, 0);
-            Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().displayGuiScreen(guiYesNo));
+            mc.addScheduledTask(() -> mc.displayGuiScreen(guiYesNo));
         });
     }
 
     @Override
     protected boolean joinServer(String serverHash) {
-        final Minecraft mc = Minecraft.getMinecraft();
         try {
             mc.getSessionService().joinServer(mc.getSession().getProfile(), mc.getSession().getToken(), serverHash);
             return true;
