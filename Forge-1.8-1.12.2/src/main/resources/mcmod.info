@@ -4,9 +4,10 @@
     "name": "Open Auth Mod",
     "description": "Authenticate with proxies during login or play state to allow online mode server switching.",
     "version": "${version}",
+    "mcversion": "[1.8,1.12.2]",
     "url": "https://github.com/RaphiMC/OpenAuthMod",
     "updateUrl": "https://github.com/RaphiMC/OpenAuthMod/releases/latest",
-    "logoFile": "assets/oam/logo.png",
+    "logoFile": "logo.png",
     "authorList": [
       "RK_01",
       "Lenni0451"

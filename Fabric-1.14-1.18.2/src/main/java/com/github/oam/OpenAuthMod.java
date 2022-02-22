@@ -22,8 +22,13 @@ import java.util.concurrent.Callable;
 
 public class OpenAuthMod extends OpenAuthModPlatform implements ClientModInitializer {
 
-    public static OpenAuthMod INSTANCE;
+    private static OpenAuthMod INSTANCE;
     public static final boolean MULTICONNECT_LOADED = FabricLoader.getInstance().isModLoaded("multiconnect");
+
+    public static OpenAuthMod getInstance() {
+        return INSTANCE;
+    }
+
 
     private final MinecraftClient mc = MinecraftClient.getInstance();
     private ClientConnection clientConnection;
@@ -67,16 +72,17 @@ public class OpenAuthMod extends OpenAuthModPlatform implements ClientModInitial
 
     @Override
     protected void openConfirmScreen(String title, String subTitle, Callable<Void> yesCallback, Callable<Void> noCallback) {
-        mc.execute(() -> {
+        this.mc.execute(() -> {
             final Screen parentScreen = mc.currentScreen;
-            mc.openScreen(new ConfirmScreen(success -> {
+            this.mc.openScreen(new ConfirmScreen(success -> {
                 try {
-                    final Void unused = success ? yesCallback.call() : noCallback.call();
+                    if (success) yesCallback.call();
+                    else noCallback.call();
                 } catch (Throwable e) {
                     e.printStackTrace();
                     this.clientConnection.channel.close();
                 }
-                mc.openScreen(parentScreen);
+                this.mc.openScreen(parentScreen);
             }, new LiteralText(title), new LiteralText(subTitle)));
         });
     }
@@ -84,7 +90,7 @@ public class OpenAuthMod extends OpenAuthModPlatform implements ClientModInitial
     @Override
     protected boolean joinServer(String serverHash) {
         try {
-            mc.getSessionService().joinServer(mc.getSession().getProfile(), mc.getSession().getAccessToken(), serverHash);
+            this.mc.getSessionService().joinServer(this.mc.getSession().getProfile(), this.mc.getSession().getAccessToken(), serverHash);
             return true;
         } catch (Throwable e) {
             return false;

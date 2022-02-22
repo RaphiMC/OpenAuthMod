@@ -12,10 +12,15 @@ import net.minecraftforge.fml.common.Mod;
 import java.io.IOException;
 import java.util.concurrent.Callable;
 
-@Mod(modid = "oam", version = "2.0.0", acceptedMinecraftVersions = "*")
+@Mod(modid = "oam", useMetadata = true, clientSideOnly = true)
 public class OpenAuthMod extends OpenAuthModPlatform {
 
-    public static OpenAuthMod INSTANCE;
+    private static OpenAuthMod INSTANCE;
+
+    public static OpenAuthMod getInstance() {
+        return INSTANCE;
+    }
+
 
     private final Minecraft mc = Minecraft.getMinecraft();
     private NetworkManager networkManager;
@@ -83,25 +88,25 @@ public class OpenAuthMod extends OpenAuthModPlatform {
 
     @Override
     protected void openConfirmScreen(String title, String subTitle, Callable<Void> yesCallback, Callable<Void> noCallback) {
-        mc.addScheduledTask(() -> {
-            final GuiScreen parentScreen = mc.currentScreen;
-            final GuiYesNo guiYesNo = new GuiYesNo((result, id) -> {
+        this.mc.addScheduledTask(() -> {
+            final GuiScreen parentScreen = this.mc.currentScreen;
+            this.mc.displayGuiScreen(new GuiYesNo((result, id) -> {
                 try {
-                    final Void unused = result ? yesCallback.call() : noCallback.call();
+                    if (result) yesCallback.call();
+                    else noCallback.call();
                 } catch (Throwable e) {
                     e.printStackTrace();
                     this.networkManager.channel().close();
                 }
-                mc.displayGuiScreen(parentScreen);
-            }, title, subTitle, 0);
-            mc.addScheduledTask(() -> mc.displayGuiScreen(guiYesNo));
+                this.mc.displayGuiScreen(parentScreen);
+            }, title, subTitle, 0));
         });
     }
 
     @Override
     protected boolean joinServer(String serverHash) {
         try {
-            mc.getSessionService().joinServer(mc.getSession().getProfile(), mc.getSession().getToken(), serverHash);
+            this.mc.getSessionService().joinServer(this.mc.getSession().getProfile(), this.mc.getSession().getToken(), serverHash);
             return true;
         } catch (Throwable e) {
             return false;

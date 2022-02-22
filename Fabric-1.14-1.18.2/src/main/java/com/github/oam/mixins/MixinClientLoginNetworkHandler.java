@@ -22,7 +22,7 @@ public abstract class MixinClientLoginNetworkHandler {
 
     @Inject(method = "onQueryRequest", at = @At(value = "INVOKE", target = "Ljava/util/function/Consumer;accept(Ljava/lang/Object;)V", remap = false), cancellable = true)
     private void handleOAM(LoginQueryRequestS2CPacket packet, CallbackInfo ci) throws IOException {
-        if (OpenAuthMod.INSTANCE.handleQueryRequest(this.connection, packet.channel, packet.queryId, packet.payload)) {
+        if (OpenAuthMod.getInstance().handleQueryRequest(this.connection, packet.channel, packet.queryId, packet.payload)) {
             ci.cancel();
         }
     }

@@ -14,7 +14,7 @@ public class NetworkManagerTransformer implements IClassTransformer {
         if (transformedName.replace(".", "/").equals("net/minecraft/network/NetworkManager")) {
             ClassNode node;
             { //Generate ClassNode from byte source
-                ClassReader cr = new ClassReader(basicClass);
+                final ClassReader cr = new ClassReader(basicClass);
                 node = new ClassNode();
                 cr.accept(node, ClassReader.EXPAND_FRAMES);
             }
@@ -30,9 +30,9 @@ public class NetworkManagerTransformer implements IClassTransformer {
                     throw new IllegalStateException("Unable to find 'channelRead0' method");
                 }
             }
-            InsnList insns = new InsnList();
-            LabelNode jumpAfter = new LabelNode();
-            insns.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/github/oam/OpenAuthMod", "INSTANCE", "Lcom/github/oam/OpenAuthMod;"));
+            final InsnList insns = new InsnList();
+            final LabelNode jumpAfter = new LabelNode();
+            insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/github/oam/OpenAuthMod", "getInstance", "()Lcom/github/oam/OpenAuthMod;", false));
             insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
             insns.add(new VarInsnNode(Opcodes.ALOAD, 2));
             insns.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/github/oam/OpenAuthMod", "handlePacket", "(Lnet/minecraft/network/NetworkManager;Lnet/minecraft/network/Packet;)Z", false));
@@ -41,7 +41,7 @@ public class NetworkManagerTransformer implements IClassTransformer {
             insns.add(jumpAfter);
             channelRead0.instructions.insertBefore(channelRead0.instructions.getFirst(), insns);
             { //Get the byte source of the modified class
-                ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
+                final ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
                 node.accept(classWriter);
                 basicClass = classWriter.toByteArray();
             }

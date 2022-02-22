@@ -5,8 +5,8 @@
 This mod provides an interface for proxies to authenticate to an online mode server. This works by forwarding the authentication request to the client and letting it do the authentication.
 
 ## Compatibility
-* Forge 1.8 - 1.12.2
 * Fabric 1.14 - 1.18.2
+* Forge 1.8 - 1.18.2
 
 ## Projects where this mod can be used
 * [ViaProxy](https://discord.gg/dCzT9XHEWu): ViaProxy is a closed source proxy which lets players join on every classic, alpha, beta and release server. To try it out join *viaproxy.raphimc.net* with a minecraft 1.8 - latest client. OpenAuthMod allows you to join online mode servers over that proxy.
@@ -14,7 +14,6 @@ This mod provides an interface for proxies to authenticate to an online mode ser
 
 ## Building
 To run this mod in a development environment you simply need to import the project as a gradle project into your IDE.\
-To run it using the command line execute `gradlew runClient`\
 To build it using the command line execute `gradlew build`
 
 ## Protocol definition

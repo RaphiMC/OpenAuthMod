@@ -15,8 +15,8 @@ subprojects {
     compileJava.options.encoding = "UTF-8"
 
     archivesBaseName = project.archives_base_name
-    group = project.maven_group
-    version = project.mod_version
+    group = rootProject.maven_group
+    version = rootProject.mod_version
 
     configurations {
         libs

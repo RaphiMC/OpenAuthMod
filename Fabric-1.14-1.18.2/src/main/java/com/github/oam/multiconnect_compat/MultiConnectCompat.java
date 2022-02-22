@@ -13,7 +13,7 @@ public class MultiConnectCompat {
         MultiConnectAPI.instance().addClientboundIdentifierCustomPayloadListener(event -> {
             if (!event.getChannel().toString().equals(OpenAuthMod.OAM_CHANNEL)) return;
             try {
-                OpenAuthMod.INSTANCE.handlePlayCustomPayload(event.getNetworkHandler().getConnection(), event.getChannel(), event.getData());
+                OpenAuthMod.getInstance().handlePlayCustomPayload(event.getNetworkHandler().getConnection(), event.getChannel(), event.getData());
             } catch (Throwable e) {
                 e.printStackTrace();
                 event.getNetworkHandler().getConnection().channel.close();
@@ -22,7 +22,7 @@ public class MultiConnectCompat {
         MultiConnectAPI.instance().addClientboundStringCustomPayloadListener(event -> {
             if (!event.getChannel().equals(OpenAuthMod.OAM_CHANNEL)) return;
             try {
-                OpenAuthMod.INSTANCE.handlePlayCustomPayload(event.getNetworkHandler().getConnection(), new Identifier(event.getChannel()), event.getData());
+                OpenAuthMod.getInstance().handlePlayCustomPayload(event.getNetworkHandler().getConnection(), new Identifier(event.getChannel()), event.getData());
             } catch (Throwable e) {
                 e.printStackTrace();
                 event.getNetworkHandler().getConnection().channel.close();

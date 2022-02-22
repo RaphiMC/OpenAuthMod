@@ -25,6 +25,8 @@ minecraft {
     // See more information here: https://github.com/MinecraftForge/MCPConfig/blob/master/Mojang.md
     mappings channel: 'official', version: '1.16.5'
 
+    // accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg') // Breaks build process?
+
     runs {
         client {
             workingDirectory project.file('run')
@@ -47,7 +49,6 @@ minecraft {
     }
 }
 
-sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     // Specify the version of Minecraft to use. If this is any group other than 'net.minecraft', it is assumed
     // that the dep is a ForgeGradle 'patcher' dependency, and its patches will be applied.

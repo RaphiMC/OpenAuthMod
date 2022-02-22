@@ -4,7 +4,7 @@
   "version": "${version}",
   "name": "Open Auth Mod",
   "description": "Authenticate with proxies during login or play state to allow online mode server switching.",
-  "icon": "assets/oam/logo.png",
+  "icon": "logo.png",
   "authors": [
     "RK_01",
     "Lenni0451"
