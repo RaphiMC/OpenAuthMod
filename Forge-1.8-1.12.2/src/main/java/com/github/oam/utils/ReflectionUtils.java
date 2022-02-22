@@ -46,7 +46,7 @@ public class ReflectionUtils {
     }
 
     public static Method getMethod(final Object ob, final String... methodNames) {
-        List<String> possibleNames = new ArrayList<String>();
+        final List<String> possibleNames = new ArrayList<>();
         Collections.addAll(possibleNames, methodNames);
         for (Method method : ob.getClass().getMethods()) {
             if (possibleNames.contains(method.getName())) {

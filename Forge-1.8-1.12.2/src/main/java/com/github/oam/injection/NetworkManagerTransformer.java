@@ -32,10 +32,11 @@ public class NetworkManagerTransformer implements IClassTransformer {
             }
             InsnList insns = new InsnList();
             LabelNode jumpAfter = new LabelNode();
+            insns.add(new FieldInsnNode(Opcodes.GETSTATIC, "com/github/oam/OpenAuthMod", "INSTANCE", "Lcom/github/oam/OpenAuthMod;"));
             insns.add(new VarInsnNode(Opcodes.ALOAD, 0));
             insns.add(new VarInsnNode(Opcodes.ALOAD, 2));
-            insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/github/oam/OpenAuthMod", "handlePacket", "(Lnet/minecraft/network/NetworkManager;Lnet/minecraft/network/Packet;)Z", false));
-            insns.add(new JumpInsnNode(Opcodes.IFNE, jumpAfter));
+            insns.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/github/oam/OpenAuthMod", "handlePacket", "(Lnet/minecraft/network/NetworkManager;Lnet/minecraft/network/Packet;)Z", false));
+            insns.add(new JumpInsnNode(Opcodes.IFEQ, jumpAfter));
             insns.add(new InsnNode(Opcodes.RETURN));
             insns.add(jumpAfter);
             channelRead0.instructions.insertBefore(channelRead0.instructions.getFirst(), insns);

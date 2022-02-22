@@ -18,12 +18,12 @@ To run it using the command line execute `gradlew runClient`\
 To build it using the command line execute `gradlew build`
 
 ## Protocol definition
-### Modern
+### Modern (>= 1.13)
 1. Proxy sends a `0x04` LoginCustomPayload (Channel: `openauthmod:join`) packet which contains the hashed server id used for authentication.
 2. Client receives packet and calls the `joinServer` method. If the client authenticated successfully it responds with an `0x02` LoginCustomPayloadResponse and empty data. If authentication failed the client will send the same packet and no data.
 3. Proxy continues normal login state packet flow and lets the user join the server.
 
-### Legacy
+### Legacy (<= 1.12.2)
 1. Proxy sends a `0x00` LoginDisconnect packet which is seperated by `\n` in three parts. The first part contains a message which the user sees if the OpenAuthMod is not installed. The second part contains the server hash used for authentication. The last part is used for identifying the packet as an authentication request. It is equal to:`String OPENAUTHMOD_LEGACY_MAGIC = new String(new byte[]{2, 20, 12, 3}, StandardCharsets.UTF_8)`
 2. Client receives packet and calls the `joinServer` method. If the client authenticated successfully it responds with an `0x00` LoginHello packet. The data (username string) starts with `OPENAUTHMOD_LEGACY_MAGIC` and after that contains `true` or `false` depending on wether authentication succeeded or failed.
 3. Proxy continues normal login state packet flow and lets the user join the server.

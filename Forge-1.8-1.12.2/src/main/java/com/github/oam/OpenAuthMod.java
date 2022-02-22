@@ -1,54 +1,42 @@
 package com.github.oam;
 
-import com.github.oam.utils.IntTo3ByteCodec;
 import com.github.oam.utils.ReflectionUtils;
 import com.mojang.authlib.GameProfile;
 import io.netty.buffer.Unpooled;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
-import net.minecraft.client.gui.GuiYesNoCallback;
 import net.minecraft.network.*;
 import net.minecraftforge.fml.common.Mod;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
+import java.util.concurrent.Callable;
 
 @Mod(modid = "oam", version = "2.0.0", acceptedMinecraftVersions = "*")
-public class OpenAuthMod {
+public class OpenAuthMod extends OpenAuthModPlatform {
 
-    private static final String OAM_CPL_CHANNEL = "openauthmod:join";
-    private static final byte[] OAM_MAGIC = new byte[]{2, 20, 12, 3};
-    private static final String OAM_MAGIC_STRING = new String(OAM_MAGIC, StandardCharsets.UTF_8);
-    private static final int OAM_MAGIC_INT;
+    public static OpenAuthMod INSTANCE;
 
-    static {
-        try {
-            OAM_MAGIC_INT = -new DataInputStream(new ByteArrayInputStream(OAM_MAGIC)).readInt();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private NetworkManager networkManager;
+
+    public OpenAuthMod() {
+        INSTANCE = this;
     }
 
-    private static ByteArrayOutputStream compressionDataStream = null;
+    public boolean handlePacket(final NetworkManager networkManager, final Packet<?> packet) throws IOException {
+        this.networkManager = networkManager;
 
-    public static boolean handlePacket(final NetworkManager networkManager, final Packet<?> packet) {
         if (packet.getClass().getSimpleName().endsWith("CustomPayload")) {
-            String channel = ReflectionUtils.getField(packet, String.class, 0);
-            if (OAM_CPL_CHANNEL.equals(channel)) {
-                final PacketBuffer buffer = ReflectionUtils.getField(packet, PacketBuffer.class, 0);
-                final String serverHash = buffer.readString(64);
-                requestAuth(networkManager, serverHash, true);
-                return false;
-            }
+            final String channel = ReflectionUtils.getField(packet, String.class, 0);
+            final PacketBuffer buffer = ReflectionUtils.getField(packet, PacketBuffer.class, 0);
+            buffer.markReaderIndex();
+            final byte[] data = new byte[buffer.readableBytes()];
+            buffer.readBytes(data);
+            buffer.resetReaderIndex();
+
+            return this.handleCustomPayloadPacket(channel, data);
         } else if (packet.getClass().getName().contains("Disconnect") && packet.getClass().getName().contains("login")) {
             String rawReason;
-
             try {
                 final Class<?> clazz = ReflectionUtils.getClass("net.minecraft.util.IChatComponent", "net.minecraft.util.text.ITextComponent");
                 final Object component = ReflectionUtils.getField(packet, clazz, 0);
@@ -57,91 +45,72 @@ public class OpenAuthMod {
                 t.printStackTrace();
                 rawReason = "";
             }
-            final String[] parts = rawReason.split("\n");
-            if (parts.length == 3 && Arrays.equals(parts[2].getBytes(), OAM_MAGIC)) {
-                requestAuth(networkManager, parts[1], false);
-                return false;
-            }
-        } else if (packet.getClass().getName().contains("EnableCompression")) {
-            final int threshold = ReflectionUtils.getField(packet, int.class, 0);
-            if (threshold < 0) {
-                if (compressionDataStream == null && threshold == OAM_MAGIC_INT) { // start
-                    compressionDataStream = new ByteArrayOutputStream();
-                    return false;
-                } else if (compressionDataStream != null && threshold == OAM_MAGIC_INT) { // end
-                    final String serverHash = new BigInteger(compressionDataStream.toByteArray()).toString(16);
-                    compressionDataStream = null;
-                    requestAuth(networkManager, serverHash, false);
-                    return false;
-                }
-                if (compressionDataStream != null) { // data
-                    try {
-                        compressionDataStream.write(IntTo3ByteCodec.decode(threshold));
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    return false;
-                }
-            }
+
+            return this.handleDisconnectPacket(rawReason);
+        } else if (packet.getClass().getName().endsWith("EnableCompression")) {
+            return this.handleSetCompressionPacket(ReflectionUtils.getField(packet, int.class, 0));
         }
-        return true;
+
+        return false;
     }
 
-    private static void requestAuth(final NetworkManager networkManager, final String serverHash, final boolean ingame) {
-        Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-            @Override
-            public void run() {
-                final GuiScreen parentScreen = Minecraft.getMinecraft().currentScreen;
-                final GuiYesNo guiYesNo = new GuiYesNo(new GuiYesNoCallback() {
-                    @Override
-                    public void confirmClicked(boolean result, int id) {
-                        if (result) {
-                            joinServer(networkManager, serverHash, ingame);
-                        } else {
-                            sendResponse(networkManager, false, ingame);
-                        }
-                        Minecraft.getMinecraft().displayGuiScreen(parentScreen);
-                    }
-                }, "Allow Open Auth Mod authentication?", "This will allow the proxy to authenticate as you in a Minecraft Server.", 0);
-                Minecraft.getMinecraft().addScheduledTask(new Runnable() {
-                    @Override
-                    public void run() {
-                        Minecraft.getMinecraft().displayGuiScreen(guiYesNo);
-                    }
-                });
-            }
+    @Override
+    protected void sendCustomPayloadPacket(String channel, byte[] data) {
+        try {
+            final Packet<?> packet = (Packet<?>) ReflectionUtils.getClass("net.minecraft.network.play.client.C17PacketCustomPayload", "net.minecraft.network.play.client.CPacketCustomPayload").newInstance();
+            final PacketBuffer buf = new PacketBuffer(Unpooled.wrappedBuffer(data));
+            ReflectionUtils.setField(packet, channel, String.class, 0);
+            ReflectionUtils.setField(packet, buf, PacketBuffer.class, 0);
+            networkManager.sendPacket(packet);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            networkManager.channel().close();
+        }
+    }
+
+    @Override
+    protected void sendLoginHelloPacket(String username) {
+        try {
+            final Packet<?> loginStartPacket = EnumConnectionState.LOGIN.getPacket(EnumPacketDirection.SERVERBOUND, 0);
+            ReflectionUtils.setField(loginStartPacket, new GameProfile(null, username), GameProfile.class, 0);
+            networkManager.sendPacket(loginStartPacket);
+        } catch (Throwable e) {
+            e.printStackTrace();
+            networkManager.channel().close();
+        }
+    }
+
+    @Override
+    protected void openConfirmScreen(String title, String subTitle, Callable<Void> yesCallback, Callable<Void> noCallback) {
+        Minecraft.getMinecraft().addScheduledTask(() -> {
+            final GuiScreen parentScreen = Minecraft.getMinecraft().currentScreen;
+            final GuiYesNo guiYesNo = new GuiYesNo((result, id) -> {
+                try {
+                    final Void unused = result ? yesCallback.call() : noCallback.call();
+                } catch (Throwable e) {
+                    e.printStackTrace();
+                    networkManager.channel().close();
+                }
+                Minecraft.getMinecraft().displayGuiScreen(parentScreen);
+            }, title, subTitle, 0);
+            Minecraft.getMinecraft().addScheduledTask(() -> Minecraft.getMinecraft().displayGuiScreen(guiYesNo));
         });
     }
 
-    private static void joinServer(final NetworkManager networkManager, final String serverHash, final boolean ingame) {
+    @Override
+    protected boolean joinServer(String serverHash) {
         final Minecraft mc = Minecraft.getMinecraft();
         try {
             mc.getSessionService().joinServer(mc.getSession().getProfile(), mc.getSession().getToken(), serverHash);
-            sendResponse(networkManager, true, ingame);
-        } catch (Throwable t) {
-            sendResponse(networkManager, false, ingame);
+            return true;
+        } catch (Throwable e) {
+            return false;
         }
     }
 
-    private static void sendResponse(final NetworkManager networkManager, boolean success, final boolean ingame) {
-        try {
-            if (ingame) {
-                Class<?> customPayloadPacket = ReflectionUtils.getClass("net.minecraft.network.play.client.C17PacketCustomPayload", "net.minecraft.network.play.client.CPacketCustomPayload");
-                Packet<?> packet = (Packet<?>) customPayloadPacket.newInstance();
-                PacketBuffer buf = new PacketBuffer(Unpooled.buffer());
-                buf.writeBoolean(success);
-                ReflectionUtils.setField(packet, OAM_CPL_CHANNEL, String.class, 0);
-                ReflectionUtils.setField(packet, buf, PacketBuffer.class, 0);
-                networkManager.sendPacket(packet);
-            } else {
-                Packet<?> loginStartPacket = EnumConnectionState.LOGIN.getPacket(EnumPacketDirection.SERVERBOUND, 0);
-                ReflectionUtils.setField(loginStartPacket, new GameProfile(null, OAM_MAGIC_STRING + success), GameProfile.class, 0);
-                networkManager.sendPacket(loginStartPacket);
-            }
-        } catch (Throwable t) {
-            t.printStackTrace();
-            networkManager.channel().close();
-        }
+    @Override
+    protected boolean isInPlayState() {
+        return EnumConnectionState.PLAY.equals(this.networkManager.channel().attr(NetworkManager.PROTOCOL_ATTRIBUTE_KEY).get());
     }
 
 }
