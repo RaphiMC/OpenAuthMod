@@ -2,6 +2,10 @@ plugins {
     id 'java'
 }
 
+jar {
+    enabled = false
+}
+
 subprojects {
     apply plugin: "java"
 
@@ -25,12 +29,6 @@ subprojects {
             duplicatesStrategy = DuplicatesStrategy.EXCLUDE
             configurations.libs.collect {
                 it.isDirectory() ? it : zipTree(it)
-            }
-        }
-
-        if (it.project.name != "Shared") {
-            from ("LICENSE") {
-                rename { "${it}_${project.archivesBaseName}" }
             }
         }
     }

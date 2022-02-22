@@ -12,6 +12,7 @@ buildscript {
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 
 minecraft {
     // The mappings can be changed at any time and must be in the following format.
@@ -41,6 +42,9 @@ minecraft {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
+
+            // Load core mod
+            property "fml.coreMods.load", "com.github.oam.injection.Injector"
         }
     }
 }

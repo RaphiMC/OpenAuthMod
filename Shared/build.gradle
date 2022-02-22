@@ -1,0 +1,5 @@
+jar {
+    from("LICENSE") {
+        rename { "${it}-${rootProject.name}" }
+    }
+}
