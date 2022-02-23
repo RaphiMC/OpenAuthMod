@@ -17,7 +17,7 @@ function initializeCoreMod() {
                 'methodName': 'func_209521_a',
                 'methodDesc': '(Lnet/minecraft/network/login/server/SCustomPayloadLoginPacket;)V'
             },
-            'transformer': function(method) {
+            'transformer': function (method) {
                 var insns = new InsnList();
                 var jumpAfterLabel = new LabelNode();
                 insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/github/oam/OpenAuthMod", "getInstance", "()Lcom/github/oam/OpenAuthMod;"));
@@ -45,7 +45,7 @@ function initializeCoreMod() {
                 'methodName': 'func_147240_a',
                 'methodDesc': '(Lnet/minecraft/network/play/server/SCustomPayloadPlayPacket;)V'
             },
-            'transformer': function(method) {
+            'transformer': function (method) {
                 var insns = new InsnList();
                 var jumpAfterLabel = new LabelNode();
                 insns.add(new MethodInsnNode(Opcodes.INVOKESTATIC, "com/github/oam/OpenAuthMod", "getInstance", "()Lcom/github/oam/OpenAuthMod;"));

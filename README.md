@@ -6,7 +6,7 @@ This mod provides an interface for proxies to authenticate to an online mode ser
 
 ## Compatibility
 * Fabric 1.14 - 1.18.2
-* Forge 1.14 - 1.16.5 (1.17 soon™)
+* Forge 1.14 - 1.18.2
 * Forge 1.8 - 1.12.2
 
 ## Projects where this mod can be used

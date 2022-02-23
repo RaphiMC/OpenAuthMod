@@ -22,6 +22,6 @@ side = "CLIENT"
 [[dependencies.oam]]
 modId = "minecraft"
 mandatory = true
-versionRange = "[1.14,1.18.2]"
+versionRange = "[1.17,1.18.2]"
 ordering = "NONE"
 side = "CLIENT"
