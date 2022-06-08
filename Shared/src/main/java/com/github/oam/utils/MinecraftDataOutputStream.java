@@ -1,9 +1,6 @@
 package com.github.oam.utils;
 
-import java.io.DataOutputStream;
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class MinecraftDataOutputStream extends DataOutputStream {
@@ -27,6 +24,11 @@ public class MinecraftDataOutputStream extends DataOutputStream {
             input >>>= 7;
         }
         this.writeByte(input);
+    }
+
+    public void writeByteArray(byte[] array) throws IOException {
+        this.writeVarInt(array.length);
+        this.write(array);
     }
 
     public void writeString(final String string) throws IOException {

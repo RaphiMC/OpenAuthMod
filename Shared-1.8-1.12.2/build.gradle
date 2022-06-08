@@ -1,3 +1,0 @@
-dependencies {
-    libs project(":Shared")
-}

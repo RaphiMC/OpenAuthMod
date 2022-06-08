@@ -1,16 +1,7 @@
-plugins {
-    id 'java'
-}
-
-jar {
-    enabled = false
-}
-
 subprojects {
     apply plugin: "java"
 
     java.toolchain.languageVersion = JavaLanguageVersion.of(8)
-
     compileJava.options.encoding = "UTF-8"
 
     archivesBaseName = project.archives_base_name
@@ -24,15 +15,14 @@ subprojects {
     }
 
     jar {
+        dependsOn configurations.libs
         from {
             duplicatesStrategy = DuplicatesStrategy.EXCLUDE
             configurations.libs.collect {
-                it.isDirectory() ? it : zipTree(it)
+                zipTree(it)
             }
+        } {
+            exclude "META-INF/*.RSA", "META-INF/*.SF", "META-INF/*.DSA"
         }
-    }
-
-    java {
-        withSourcesJar()
     }
 }

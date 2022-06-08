@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[24,)"
+loaderVersion = "[37,)"
 license = "MIT"
 issueTrackerURL = "https://github.com/RaphiMC/OpenAuthMod/issues"
 
@@ -15,7 +15,7 @@ description = "Authenticate with proxies during login or play state to allow onl
 [[dependencies.oam]]
 modId = "forge"
 mandatory = true
-versionRange = "[24,)"
+versionRange = "[37,)"
 ordering = "NONE"
 side = "CLIENT"
 

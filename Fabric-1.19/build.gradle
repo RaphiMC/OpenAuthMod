@@ -1,0 +1,33 @@
+plugins {
+    id "fabric-loom" version "0.12-SNAPSHOT"
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+dependencies {
+    minecraft "com.mojang:minecraft:${project.minecraft_version}"
+    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+    libs project(":Shared")
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/oam.accesswidener")
+    mixin.defaultRefmapName = "oam.mixins.refmap.json"
+
+    runs {
+        client {
+            runDir = projectDir.parentFile.toPath().relativize(project.file("run").toPath()).toFile().path
+            client()
+        }
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+
+    filesMatching("fabric.mod.json") {
+        expand "version": project.version
+    }
+}

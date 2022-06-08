@@ -7,7 +7,6 @@ import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.ProtocolType;
 import net.minecraft.network.login.client.CCustomPayloadLoginPacket;
 import net.minecraft.network.play.client.CCustomPayloadPacket;
 import net.minecraft.util.ResourceLocation;
@@ -18,7 +17,7 @@ import java.io.IOException;
 import java.util.concurrent.Callable;
 
 @Mod("oam")
-public class OpenAuthMod extends OpenAuthModPlatform {
+public class OpenAuthMod extends ModernOpenAuthModPlatform {
 
     private static OpenAuthMod INSTANCE;
 
@@ -34,26 +33,30 @@ public class OpenAuthMod extends OpenAuthModPlatform {
         INSTANCE = this;
     }
 
+
     public boolean handlePlayCustomPayload(final NetworkManager networkManager, final ResourceLocation channel, final PacketBuffer data) throws IOException {
         this.networkManager = networkManager;
 
-        return this.handleCustomPayloadPacket(channel.toString(), ByteBufUtil.getBytes(data));
+        return this.handlePlayCustomPayload(channel.toString(), ByteBufUtil.getBytes(data));
     }
 
-    public boolean handleQueryRequest(final NetworkManager networkManager, final ResourceLocation channel, final int queryId, final PacketBuffer data) throws IOException {
+    public boolean handleLoginCustomPayload(final NetworkManager networkManager, final ResourceLocation channel, final int queryId, final PacketBuffer data) throws IOException {
         this.networkManager = networkManager;
 
-        return this.handleQueryRequestPacket(channel.toString(), queryId, ByteBufUtil.getBytes(data));
+        return this.handleLoginCustomPayload(channel.toString(), queryId, ByteBufUtil.getBytes(data));
     }
 
-    @Override
-    protected void sendCustomPayloadPacket(String channel, byte[] data) {
-        this.networkManager.send(new CCustomPayloadPacket(new ResourceLocation(channel), new PacketBuffer(Unpooled.wrappedBuffer(data))));
-    }
 
     @Override
-    protected void sendQueryResponsePacket(int queryId, byte[] data) {
-        this.networkManager.send(new CCustomPayloadLoginPacket(queryId, data != null ? new PacketBuffer(Unpooled.wrappedBuffer(data)) : null));
+    protected void sendResponse(int id, byte[] data) {
+        if (this.networkManager.channel().attr(NetworkManager.ATTRIBUTE_PROTOCOL).get().getId() == 0) {
+            final PacketBuffer packetBuffer = new PacketBuffer(Unpooled.buffer());
+            packetBuffer.writeVarInt(id);
+            packetBuffer.writeBytes(data);
+            this.networkManager.send(new CCustomPayloadPacket(new ResourceLocation(SharedConstants.DATA_CHANNEL), packetBuffer));
+        } else {
+            this.networkManager.send(new CCustomPayloadLoginPacket(id, new PacketBuffer(Unpooled.wrappedBuffer(data))));
+        }
     }
 
     @Override
@@ -74,18 +77,13 @@ public class OpenAuthMod extends OpenAuthModPlatform {
     }
 
     @Override
-    protected boolean joinServer(String serverHash) {
+    protected boolean joinServer(String serverIdHash) {
         try {
-            this.mc.getMinecraftSessionService().joinServer(this.mc.getUser().getGameProfile(), this.mc.getUser().getAccessToken(), serverHash);
+            this.mc.getMinecraftSessionService().joinServer(this.mc.getUser().getGameProfile(), this.mc.getUser().getAccessToken(), serverIdHash);
             return true;
         } catch (Throwable e) {
             return false;
         }
-    }
-
-    @Override
-    protected boolean isInPlayState() {
-        return ProtocolType.PLAY.equals(this.networkManager.channel().attr(NetworkManager.ATTRIBUTE_PROTOCOL).get());
     }
 
 }

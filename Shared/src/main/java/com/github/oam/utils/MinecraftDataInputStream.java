@@ -1,8 +1,6 @@
 package com.github.oam.utils;
 
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 public class MinecraftDataInputStream extends DataInputStream {
@@ -34,6 +32,13 @@ public class MinecraftDataInputStream extends DataInputStream {
         }
 
         return i;
+    }
+
+    public byte[] readByteArray() throws IOException {
+        int i = this.readVarInt();
+        byte[] bs = new byte[i];
+        this.readFully(bs);
+        return bs;
     }
 
     public String readString(final int maxLength) throws IOException {

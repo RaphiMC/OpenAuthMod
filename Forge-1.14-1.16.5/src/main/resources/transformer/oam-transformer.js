@@ -29,7 +29,7 @@ function initializeCoreMod() {
                 insns.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/network/login/server/SCustomPayloadLoginPacket", ASMAPI.mapField("field_209919_a"), "I"));
                 insns.add(new VarInsnNode(Opcodes.ALOAD, 1));
                 insns.add(new FieldInsnNode(Opcodes.GETFIELD, "net/minecraft/network/login/server/SCustomPayloadLoginPacket", ASMAPI.mapField("field_209921_c"), "Lnet/minecraft/network/PacketBuffer;"));
-                insns.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/github/oam/OpenAuthMod", "handleQueryRequest", "(Lnet/minecraft/network/NetworkManager;Lnet/minecraft/util/ResourceLocation;ILnet/minecraft/network/PacketBuffer;)Z"));
+                insns.add(new MethodInsnNode(Opcodes.INVOKEVIRTUAL, "com/github/oam/OpenAuthMod", "handleLoginCustomPayload", "(Lnet/minecraft/network/NetworkManager;Lnet/minecraft/util/ResourceLocation;ILnet/minecraft/network/PacketBuffer;)Z"));
                 insns.add(new JumpInsnNode(Opcodes.IFEQ, jumpAfterLabel));
                 insns.add(new InsnNode(Opcodes.RETURN));
                 insns.add(jumpAfterLabel);

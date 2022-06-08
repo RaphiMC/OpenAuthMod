@@ -1,21 +1,21 @@
 pluginManagement {
     repositories {
         maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
+            name = "Fabric"
+            url = "https://maven.fabricmc.net/"
         }
         mavenCentral()
         gradlePluginPortal()
     }
 }
 
-rootProject.name = 'OpenAuthMod'
+rootProject.name = "OpenAuthMod"
 
 include(":Shared")
-include(":Shared-1.13-1.18.2")
-include(":Shared-1.8-1.12.2")
 
 include(":Fabric-1.14-1.18.2")
+include(":Fabric-1.19")
+include(":Forge-1.19")
 include(":Forge-1.17-1.18.2")
 include(":Forge-1.14-1.16.5")
 include(":Forge-1.8-1.12.2")
