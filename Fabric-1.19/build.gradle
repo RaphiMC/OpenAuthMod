@@ -13,8 +13,8 @@ dependencies {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/oam.accesswidener")
-    mixin.defaultRefmapName = "oam.mixins.refmap.json"
+    accessWidenerPath = file("src/main/resources/openauthmod.accesswidener")
+    mixin.defaultRefmapName = "openauthmod.mixins.refmap.json"
 
     runs {
         client {

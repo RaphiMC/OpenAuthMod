@@ -4,7 +4,7 @@ license = "MIT"
 issueTrackerURL = "https://github.com/RaphiMC/OpenAuthMod/issues"
 
 [[mods]]
-modId = "oam"
+modId = "openauthmod"
 version = "${version}"
 displayName = "Open Auth Mod"
 displayURL = "https://github.com/RaphiMC/OpenAuthMod"
@@ -12,14 +12,14 @@ logoFile = "logo.png"
 authors = "RK_01, Lenni0451"
 description = "Authenticate with proxies during login or play state to allow online mode server switching."
 
-[[dependencies.oam]]
+[[dependencies.openauthmod]]
 modId = "forge"
 mandatory = true
 versionRange = "[26,)"
 ordering = "NONE"
 side = "CLIENT"
 
-[[dependencies.oam]]
+[[dependencies.openauthmod]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[1.14,1.16.5]"

@@ -1,6 +1,6 @@
 [
   {
-    "modid": "oam",
+    "modid": "openauthmod",
     "name": "Open Auth Mod",
     "description": "Authenticate with proxies during login or play state to allow online mode server switching.",
     "version": "${version}",

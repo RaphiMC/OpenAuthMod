@@ -31,7 +31,7 @@ minecraft {
 
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
-            property "fml.coreMods.load", "com.github.oam.injection.Injector"
+            property "fml.coreMods.load", "net.raphimc.openauthmod.injection.Injector"
         }
     }
 }
@@ -41,7 +41,7 @@ jar {
             "Manifest-Version": "1.0",
             "FMLCorePluginContainsFMLMod": "true",
             "ForceLoadAsMod": "true",
-            "FMLCorePlugin": "com.github.oam.injection.Injector"
+            "FMLCorePlugin": "net.raphimc.openauthmod.injection.Injector"
     )
 }
 

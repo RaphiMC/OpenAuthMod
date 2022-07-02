@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "id": "oam",
+  "id": "openauthmod",
   "version": "${version}",
   "name": "Open Auth Mod",
   "description": "Authenticate with proxies during login or play state to allow online mode server switching.",
@@ -18,13 +18,13 @@
   "environment": "client",
   "entrypoints": {
     "client": [
-      "com.github.oam.OpenAuthMod"
+      "net.raphimc.openauthmod.OpenAuthMod"
     ]
   },
   "mixins": [
-    "oam.mixins.json"
+    "openauthmod.mixins.json"
   ],
-  "accessWidener": "oam.accesswidener",
+  "accessWidener": "openauthmod.accesswidener",
   "depends": {
     "fabricloader": ">=0.14",
     "minecraft": ">=1.19",

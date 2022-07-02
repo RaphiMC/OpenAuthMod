@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "net.raphimc.openauthmod.mixins",
+  "refmap": "openauthmod.mixins.refmap.json",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "MixinClientLoginNetworkHandler",
+    "MixinClientPlayNetworkHandler"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
