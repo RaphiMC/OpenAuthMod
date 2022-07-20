@@ -3,7 +3,6 @@ package net.raphimc.openauthmod;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ConfirmScreen;
 import net.minecraft.client.gui.screen.Screen;
@@ -20,7 +19,6 @@ import java.util.concurrent.Callable;
 public class OpenAuthMod extends ModernOpenAuthModPlatform implements ClientModInitializer {
 
     private static OpenAuthMod INSTANCE;
-    public static final boolean MULTICONNECT_LOADED = FabricLoader.getInstance().isModLoaded("multiconnect");
 
     public static OpenAuthMod getInstance() {
         return INSTANCE;
@@ -36,9 +34,6 @@ public class OpenAuthMod extends ModernOpenAuthModPlatform implements ClientModI
 
     @Override
     public void onInitializeClient() {
-        if (MULTICONNECT_LOADED) {
-            throw new IllegalStateException("OpenAuthMod is currently not compatible with multiconnect!");
-        }
     }
 
 
