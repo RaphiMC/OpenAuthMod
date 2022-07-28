@@ -14,8 +14,8 @@ rootProject.name = "OpenAuthMod"
 include(":Shared")
 
 include(":Fabric-1.14-1.18.2")
-include(":Fabric-1.19")
-include(":Forge-1.19")
+include(":Fabric-1.19-1.19.1")
+include(":Forge-1.19-1.19.1")
 include(":Forge-1.17-1.18.2")
 include(":Forge-1.14-1.16.5")
 include(":Forge-1.8-1.12.2")
