@@ -1,7 +1,7 @@
 # OpenAuthMod
 **Open source minecraft authentication protocol for proxies**
 
-![Modrinth](https://img.shields.io/modrinth/dt/Fb6XdDFr?label=Modrinth%20Download)
+![Modrinth](https://img.shields.io/modrinth/dt/Fb6XdDFr?label=Modrinth%20Downloads)
 
 ## What does this mod
 This mod provides an easy and secure interface for proxies to authenticate to an online mode server. This works by forwarding the authentication request to the client and letting it do the authentication.
