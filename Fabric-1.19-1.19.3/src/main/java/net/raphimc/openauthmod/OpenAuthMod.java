@@ -18,6 +18,7 @@ import net.minecraft.util.Identifier;
 import net.raphimc.openauthmod.data.SignedNonce;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.concurrent.Callable;
 
 public class OpenAuthMod extends ModernOpenAuthModPlatform implements ClientModInitializer {
@@ -68,6 +69,20 @@ public class OpenAuthMod extends ModernOpenAuthModPlatform implements ClientModI
 
     @Override
     protected void openConfirmScreen(String title, String subTitle, Callable<Void> yesCallback, Callable<Void> noCallback) {
+        if (this.clientConnection.channel.attr(ClientConnection.PROTOCOL_ATTRIBUTE_KEY).get().getId() == 2) {
+            if (this.clientConnection.channel.remoteAddress() instanceof InetSocketAddress address) {
+                if (address.getAddress().isLoopbackAddress()) {
+                    try {
+                        yesCallback.call();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        this.clientConnection.channel.close();
+                    }
+                    return;
+                }
+            }
+        }
+
         this.mc.execute(() -> {
             final Screen parentScreen = mc.currentScreen;
             this.mc.setScreen(new ConfirmScreen(success -> {

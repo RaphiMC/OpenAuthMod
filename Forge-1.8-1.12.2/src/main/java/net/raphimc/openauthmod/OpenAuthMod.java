@@ -10,6 +10,7 @@ import net.raphimc.openauthmod.utils.ReflectionUtils;
 import net.raphimc.openauthmod.utils.VarIntWriter;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
@@ -94,6 +95,21 @@ public class OpenAuthMod extends LegacyOpenAuthModPlatform {
 
     @Override
     protected void openConfirmScreen(String title, String subTitle, Callable<Void> yesCallback, Callable<Void> noCallback) {
+        if (this.networkManager.channel().attr(NetworkManager.PROTOCOL_ATTRIBUTE_KEY).get().getId() == 2) {
+            if (this.networkManager.channel().remoteAddress() instanceof InetSocketAddress) {
+                final InetSocketAddress address = (InetSocketAddress) this.networkManager.channel().remoteAddress();
+                if (address.getAddress().isLoopbackAddress()) {
+                    try {
+                        yesCallback.call();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        this.networkManager.channel().close();
+                    }
+                    return;
+                }
+            }
+        }
+
         this.mc.addScheduledTask(() -> {
             final GuiScreen parentScreen = this.mc.currentScreen;
             this.mc.displayGuiScreen(new GuiYesNo((result, id) -> {

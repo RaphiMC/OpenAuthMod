@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.raphimc.openauthmod.data.SignedNonce;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.concurrent.Callable;
 
 @Mod("openauthmod")
@@ -65,6 +66,20 @@ public class OpenAuthMod extends ModernOpenAuthModPlatform {
 
     @Override
     protected void openConfirmScreen(String title, String subTitle, Callable<Void> yesCallback, Callable<Void> noCallback) {
+        if (this.connection.channel().attr(Connection.ATTRIBUTE_PROTOCOL).get().getId() == 2) {
+            if (this.connection.channel().remoteAddress() instanceof InetSocketAddress address) {
+                if (address.getAddress().isLoopbackAddress()) {
+                    try {
+                        yesCallback.call();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        this.connection.channel().close();
+                    }
+                    return;
+                }
+            }
+        }
+
         this.mc.execute(() -> {
             final Screen parentScreen = this.mc.screen;
             this.mc.setScreen(new ConfirmScreen(success -> {
