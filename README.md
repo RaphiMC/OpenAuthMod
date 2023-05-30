@@ -3,7 +3,7 @@
 
 ![Modrinth](https://img.shields.io/modrinth/dt/Fb6XdDFr?label=Modrinth%20Downloads)
 
-## What does this mod
+## What does this mod do?
 This mod provides an easy and secure interface for proxies to authenticate to an online mode server. This works by forwarding the authentication request to the client and letting it do the authentication.
 
 **When using this mod, your session or private keys WILL NOT be sent to the server at any point. Everything is done clientside and with your confirmation.**
