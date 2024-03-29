@@ -1,3 +1,7 @@
+## OpenAuthMod is no longer being developed
+The mod is an unmaintainable mess due to having to support 1.8 - 1.19 and 2 different mod loaders (3 if NeoForge would be added). Updating the mod itself wouldn't be too difficult, but fixing the gradle buildfiles and attempting add more versions (1.20) would just make the whole setup even more unstable (and time consuming to fix again).
+If you want to continue the project or talk with me, feel free to join my [discord](https://discord.gg/dCzT9XHEWu).
+
 # OpenAuthMod
 **Open source minecraft authentication protocol for proxies**
 
